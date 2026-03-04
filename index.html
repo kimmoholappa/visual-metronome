@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Visual Metronome</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d0d0d;
+  --surface: #181818;
+  --surface2: #222;
+  --border: #2a2a2a;
+  --accent: #e8ff47;
+  --text: #f0f0f0;
+  --muted: #666;
+  --r: 12px;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── TOP BAR ── */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 10px; }
+.topbar h1 { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.btn-add { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; border: none; background: var(--accent); color: #000; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+
+/* ── LAYOUT ── */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+
+
+/* ── METRO GRID ── */
+.metros { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 10px; color: var(--muted); font-size: 14px; text-align: center; }
+.empty-state span { font-size: 48px; }
+
+/* ── METRO CARD ── */
+.metro-card { background: var(--surface); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; transition: border-color .2s; }
+.metro-card.playing { border-color: #3a3a1a; }
+/* ── CARD LAYOUT: two columns ── */
+.mc-body { display: flex; align-items: stretch; gap: 0; }
+
+/* LEFT: dot + bpm + beat line */
+.mc-left { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 14px 8px; gap: 6px; flex-shrink: 0; border-right: 1px solid var(--border); width: 180px; }
+.dot-area { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dot-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.06); }
+.dot { width: 26px; height: 26px; border-radius: 50%; background: #fff; }
+.dot.pulse { animation: dp .13s ease-out forwards; }
+.dot.pulse.b1 { animation: dp1 .13s ease-out forwards; }
+@keyframes dp  { 0%{transform:scale(1.7);box-shadow:0 0 20px 6px rgba(255,255,255,.45)} 100%{transform:scale(1);box-shadow:none} }
+@keyframes dp1 { 0%{transform:scale(2);box-shadow:0 0 36px 10px rgba(232,255,71,.65)} 100%{transform:scale(1);box-shadow:none} }
+
+.bpm-row { display: flex; align-items: baseline; gap: 3px; }
+.bpm-val { font-size: 44px; font-weight: 800; line-height: 1; cursor: text; min-width: 80px; text-align: center; }
+.bpm-val[contenteditable]:focus { outline: none; color: var(--accent); }
+.bpm-unit { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.bpm-btns { display: flex; gap: 4px; }
+.bpm-btn { width: 24px; height: 20px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.bpm-btn:active { background: #333; }
+
+/* beat line inside left col */
+.beat-line { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; overflow-x: auto; justify-content: center; max-width: 100%; }
+.bl-group { display: flex; gap: 1px; }
+.bl-group + .bl-group { margin-left: 3px; }
+.bl-pip { width: 7px; height: 7px; border-radius: 50%; background: #2a2a2a; flex-shrink: 0; }
+.bl-pip.q  { width: 8px; height: 8px; background: #2e2e2e; }
+.bl-pip.lit-q  { background: #fff; box-shadow: 0 0 4px rgba(255,255,255,.5); }
+.bl-pip.lit-q.b1 { background: var(--accent); box-shadow: 0 0 6px rgba(232,255,71,.7); }
+.bl-pip.lit-e  { background: #aaa; }
+.bl-pip.lit-s  { background: #888; }
+
+/* RIGHT: name, opts, play/tap */
+.mc-right { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px 6px; gap: 6px; min-width: 0; }
+.mc-header { display: flex; align-items: center; gap: 4px; }
+.mc-name { flex: 1; background: none; border: none; color: var(--muted); font-size: 12px; font-weight: 600; outline: none; min-width: 0; }
+.mc-name::placeholder { color: #3a3a3a; }
+.mc-name:focus { color: var(--accent); }
+.mc-del { background: none; border: none; color: #333; font-size: 13px; cursor: pointer; padding: 1px 3px; }
+.mc-del:hover { color: #e74c3c; }
+
+/* time sig + subdiv */
+.mc-opts { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+select.mc-sel { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 3px 6px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+.subdiv-btns { display: flex; gap: 3px; }
+.sdv { padding: 3px 8px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; }
+.sdv.on { background: var(--surface2); color: var(--text); border-color: #555; }
+
+/* play + tap */
+.mc-footer { display: flex; gap: 6px; }
+.btn-play { flex: 1; padding: 7px; border-radius: 7px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; background: #2a2a2a; color: var(--text); transition: background .15s; }
+.metro-card.playing .btn-play { background: var(--accent); color: #000; }
+.btn-tap { padding: 7px 10px; border-radius: 7px; border: 1px solid var(--border); background: none; color: var(--text); font-size: 11px; font-weight: 600; cursor: pointer; }
+.btn-tap:active { background: #333; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🥁 Visual Metronome</h1>
+  <button class="btn-add" onclick="addMetro()">＋ New</button>
+</div>
+
+<div class="main">
+
+  <div class="metros" id="metros">
+    <div class="empty-state"><span>🥁</span>Tap <b>＋ New</b> to add a tempo</div>
+  </div>
+</div>
+
+<script>
+let metros = JSON.parse(localStorage.getItem('vmet2') || 'null') || [
+  { id: 1, name: 'Intro', bpm: 80,  ts: 4, subdiv: 2 },
+  { id: 2, name: 'Verse', bpm: 120, ts: 4, subdiv: 2 },
+  { id: 3, name: 'Chorus', bpm: 128, ts: 4, subdiv: 2 },
+];
+let nid = Math.max(0, ...metros.map(m => m.id)) + 1;
+
+// per-metro runtime state
+const rt = {}; // id -> { playing, beat, timerId, lastTaps, pipIdx }
+
+function rtOf(id) {
+  if (!rt[id]) rt[id] = { playing: false, beat: 0, timerId: null, lastTaps: [], pipIdx: -1 };
+  return rt[id];
+}
+
+function save() { localStorage.setItem('vmet2', JSON.stringify(metros)); }
+
+// ── RENDER ──
+function render() {
+  renderSetlist();
+  renderMetros();
+}
+
+function renderSetlist() {}
+
+function renderMetros() {
+  const el = document.getElementById('metros');
+  if (!metros.length) {
+    el.innerHTML = '<div class="empty-state"><span>🥁</span>Tap <b>＋ New</b> to add a tempo</div>';
+    return;
+  }
+  el.innerHTML = metros.map(m => buildCard(m)).join('');
+}
+
+function buildCard(m) {
+  const totalPips = m.subdiv * m.ts; // e.g. 4*4=16 for 16ths in 4/4
+  const pipsPerBeat = m.subdiv; // 2=8ths, 4=16ths, 1=quarters
+  const r = rtOf(m.id);
+
+  // Build beat line groups (one group per quarter note beat)
+  let beatLineHTML = '';
+  for (let beat = 0; beat < m.ts; beat++) {
+    beatLineHTML += '<div class="bl-group">';
+    for (let sub = 0; sub < pipsPerBeat; sub++) {
+      const pipIdx = beat * pipsPerBeat + sub;
+      const isQ = sub === 0;
+      const isB1 = beat === 0 && sub === 0;
+      const isLit = pipIdx === r.pipIdx;
+      let cls = isQ ? 'bl-pip q' : 'bl-pip';
+      if (isLit) cls += isQ ? (isB1 ? ' lit-q b1' : ' lit-q') : (pipsPerBeat === 4 ? ' lit-s' : ' lit-e');
+      beatLineHTML += `<div class="${cls}" id="pip-${m.id}-${pipIdx}"></div>`;
+    }
+    beatLineHTML += '</div>';
+  }
+
+  const subdivLabel = m.subdiv === 1 ? 'Quarter' : m.subdiv === 2 ? '8th' : '16th';
+
+  return `<div class="metro-card ${r.playing ? 'playing' : ''}" id="card-${m.id}">
+    <div class="mc-body">
+      <div class="mc-left">
+        <div class="dot-area"><div class="dot-ring"></div><div class="dot" id="dot-${m.id}"></div></div>
+        <div class="bpm-row">
+          <div class="bpm-val" id="bpmval-${m.id}" contenteditable="true"
+            onblur="bpmEdit(${m.id},this.textContent)"
+            onkeydown="if(event.key==='Enter'){this.blur();return false}"
+          >${m.bpm}</div>
+          <div class="bpm-unit">bpm</div>
+        </div>
+        <div class="bpm-btns">
+          <button class="bpm-btn" onclick="adjBPM(${m.id},1)">+</button>
+          <button class="bpm-btn" onclick="adjBPM(${m.id},-1)">−</button>
+        </div>
+        <div class="beat-line" id="bl-${m.id}">${beatLineHTML}</div>
+      </div>
+      <div class="mc-right">
+        <div class="mc-header">
+          <input class="mc-name" value="${m.name}" placeholder="Name…" onchange="updateProp(${m.id},'name',this.value)" />
+          <button class="mc-del" onclick="deleteMetro(${m.id})">✕</button>
+        </div>
+        <div class="mc-opts">
+          <select class="mc-sel" onchange="updateProp(${m.id},'ts',+this.value)">
+            ${[2,3,4,5,6].map(n=>`<option value="${n}" ${m.ts===n?'selected':''}>${n}/4</option>`).join('')}
+          </select>
+          <div class="subdiv-btns">
+            ${[1,2,4].map(s=>`<button class="sdv ${m.subdiv===s?'on':''}" onclick="updateProp(${m.id},'subdiv',${s})">${s===1?'♩':s===2?'♪':'♬'}</button>`).join('')}
+          </div>
+        </div>
+        <div class="mc-footer">
+          <button class="btn-play" onclick="togglePlay(${m.id})">${r.playing?'■ Stop':'▶ Start'}</button>
+          <button class="btn-tap" onclick="tap(${m.id})">👆 Tap</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── METRONOME ──
+function togglePlay(id) {
+  const r = rtOf(id);
+  r.playing ? stopMetro(id) : startMetro(id);
+}
+
+function startMetro(id) {
+  const r = rtOf(id);
+  r.playing = true;
+  r.beat = 0;
+  r.pipIdx = -1;
+  refreshCard(id);
+  tick(id);
+}
+
+function stopMetro(id) {
+  const r = rtOf(id);
+  r.playing = false;
+  clearTimeout(r.timerId);
+  r.beat = 0;
+  r.pipIdx = -1;
+  refreshCard(id);
+}
+
+function tick(id) {
+  const r = rtOf(id);
+  if (!r.playing) return;
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  fireBeat(id, m);
+  r.timerId = setTimeout(() => tick(id), 60000 / m.bpm / m.subdiv);
+}
+
+function fireBeat(id, m) {
+  const r = rtOf(id);
+  const totalPips = m.subdiv * m.ts;
+  r.pipIdx = (r.pipIdx + 1) % totalPips;
+  const isQ = r.pipIdx % m.subdiv === 0;
+  const isB1 = r.pipIdx === 0;
+
+  // pulse dot only on quarter notes
+  if (isQ) {
+    const dot = document.getElementById('dot-' + id);
+    if (dot) {
+      dot.classList.remove('pulse', 'b1');
+      void dot.offsetWidth;
+      dot.classList.add('pulse');
+      if (isB1) dot.classList.add('b1');
+    }
+  }
+
+  // update beat line efficiently
+  const bl = document.getElementById('bl-' + id);
+  if (bl) {
+    // clear previous
+    const prev = bl.querySelector('.lit-q, .lit-e, .lit-s');
+    if (prev) prev.classList.remove('lit-q', 'lit-e', 'lit-s', 'b1');
+
+    const pip = document.getElementById(`pip-${id}-${r.pipIdx}`);
+    if (pip) {
+      if (isQ) {
+        pip.classList.add(isB1 ? 'lit-q' : 'lit-q');
+        if (isB1) pip.classList.add('b1');
+      } else {
+        pip.classList.add(m.subdiv === 4 ? 'lit-s' : 'lit-e');
+      }
+    }
+  }
+
+  updateSetlistItem(id);
+}
+
+function refreshCard(id) {
+  const card = document.getElementById('card-' + id);
+  if (!card) return;
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  const r = rtOf(id);
+  card.classList.toggle('playing', r.playing);
+  const btn = card.querySelector('.btn-play');
+  if (btn) btn.textContent = r.playing ? '■ Stop' : '▶ Start';
+  updateSetlistItem(id);
+}
+
+function updateSetlistItem(id) {}
+
+// ── PROPS ──
+function updateProp(id, key, val) {
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  m[key] = val;
+  save();
+  const wasPlaying = rtOf(id).playing;
+  if (wasPlaying) stopMetro(id);
+  // re-render this card only
+  const card = document.getElementById('card-' + id);
+  if (card) card.outerHTML = buildCard(m);
+  if (wasPlaying) startMetro(id);
+  renderSetlist();
+}
+
+function adjBPM(id, d) {
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  m.bpm = Math.max(20, Math.min(300, m.bpm + d));
+  save();
+  document.getElementById('bpmval-' + id).textContent = m.bpm;
+  updateSetlistItem(id);
+  const r = rtOf(id);
+  if (r.playing) { clearTimeout(r.timerId); tick(id); }
+}
+
+function bpmEdit(id, raw) {
+  const val = parseInt(raw);
+  if (isNaN(val)) { document.getElementById('bpmval-' + id).textContent = metros.find(x=>x.id===id)?.bpm; return; }
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  m.bpm = Math.max(20, Math.min(300, val));
+  document.getElementById('bpmval-' + id).textContent = m.bpm;
+  save();
+  updateSetlistItem(id);
+  const r = rtOf(id);
+  if (r.playing) { clearTimeout(r.timerId); tick(id); }
+}
+
+function tap(id) {
+  const r = rtOf(id);
+  const now = Date.now();
+  r.lastTaps.push(now);
+  if (r.lastTaps.length > 6) r.lastTaps.shift();
+  if (r.lastTaps.length < 2) return;
+  const gaps = r.lastTaps.slice(1).map((t,i) => t - r.lastTaps[i]);
+  const avg = gaps.reduce((a,b)=>a+b)/gaps.length;
+  const bpm = Math.round(60000 / avg);
+  const m = metros.find(x => x.id === id);
+  if (!m) return;
+  m.bpm = Math.max(20, Math.min(300, bpm));
+  save();
+  document.getElementById('bpmval-' + id).textContent = m.bpm;
+  updateSetlistItem(id);
+  if (r.playing) { clearTimeout(r.timerId); r.pipIdx = -1; tick(id); }
+}
+
+function addMetro() {
+  const m = { id: nid++, name: '', bpm: 120, ts: 4, subdiv: 2 };
+  metros.push(m);
+  save();
+  render();
+  setTimeout(() => {
+    const card = document.getElementById('card-' + m.id);
+    if (card) { card.scrollIntoView({ behavior: 'smooth' }); card.querySelector('.mc-name').focus(); }
+  }, 50);
+}
+
+function deleteMetro(id) {
+  stopMetro(id);
+  metros = metros.filter(m => m.id !== id);
+  save();
+  render();
+}
+
+function scrollToMetro(id) {
+  const card = document.getElementById('card-' + id);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // highlight briefly
+  card.style.borderColor = 'var(--accent)';
+  setTimeout(() => card.style.borderColor = '', 600);
+}
+
+render();
+</script>
+</body>
+</html>
