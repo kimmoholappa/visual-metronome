@@ -27,63 +27,62 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 .btn-search { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: border-color .2s; }
 .btn-search:hover { border-color: #555; }
 
-/* ── LAYOUT ── */
-.main { display: flex; flex: 1; overflow: hidden; flex-direction: column; }
-
 /* ── METRO GRID ── */
-.metros { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.metros { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 10px; color: var(--muted); font-size: 14px; text-align: center; }
 .empty-state span { font-size: 48px; }
 
 /* ── METRO CARD ── */
 .metro-card { background: var(--surface); border-radius: var(--r); border: 1px solid var(--border); overflow: hidden; transition: border-color .2s; }
 .metro-card.playing { border-color: #3a3a1a; }
-.mc-body { display: flex; align-items: stretch; gap: 0; }
+.mc-body { display: flex; align-items: stretch; }
 
-/* LEFT */
-.mc-left { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 14px 8px; gap: 6px; flex-shrink: 0; border-right: 1px solid var(--border); width: 180px; }
-.dot-area { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.dot-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.06); }
-.dot { width: 26px; height: 26px; border-radius: 50%; background: #fff; }
-.dot.pulse { animation: dp .13s ease-out forwards; }
-.dot.pulse.b1 { animation: dp1 .13s ease-out forwards; }
+/* ── LEFT COLUMN (wider) ── */
+.mc-left { width: 58%; flex-shrink: 0; border-right: 1px solid var(--border); padding: 10px 12px 8px; display: flex; flex-direction: column; gap: 8px; }
+.mc-top { display: flex; align-items: center; gap: 8px; }
+.dot-area { position: relative; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dot-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.07); }
+.dot { width: 30px; height: 30px; border-radius: 50%; background: #fff; }
+.dot.pulse   { animation: dp  .13s ease-out forwards; }
+.dot.pulse.b1{ animation: dp1 .13s ease-out forwards; }
 @keyframes dp  { 0%{transform:scale(1.7);box-shadow:0 0 20px 6px rgba(255,255,255,.45)} 100%{transform:scale(1);box-shadow:none} }
-@keyframes dp1 { 0%{transform:scale(2);box-shadow:0 0 36px 10px rgba(232,255,71,.65)} 100%{transform:scale(1);box-shadow:none} }
+@keyframes dp1 { 0%{transform:scale(2);  box-shadow:0 0 36px 10px rgba(232,255,71,.65)} 100%{transform:scale(1);box-shadow:none} }
 
-.bpm-row { display: flex; align-items: baseline; gap: 3px; }
-.bpm-val { font-size: 44px; font-weight: 800; line-height: 1; cursor: text; min-width: 80px; text-align: center; }
+.bpm-group { flex: 1; display: flex; align-items: baseline; gap: 4px; }
+.bpm-val { font-size: 40px; font-weight: 800; line-height: 1; cursor: text; min-width: 60px; }
 .bpm-val[contenteditable]:focus { outline: none; color: var(--accent); }
 .bpm-unit { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-.bpm-btns { display: flex; gap: 4px; }
-.bpm-btn { width: 24px; height: 20px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.bpm-btns { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+.bpm-btn { width: 28px; height: 22px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .bpm-btn:active { background: #333; }
 
-.beat-line { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; overflow-x: auto; justify-content: center; max-width: 100%; }
-.bl-group { display: flex; gap: 1px; }
-.bl-group + .bl-group { margin-left: 3px; }
-.bl-pip { width: 7px; height: 7px; border-radius: 50%; background: #2a2a2a; flex-shrink: 0; }
-.bl-pip.q  { width: 8px; height: 8px; background: #2e2e2e; }
-.bl-pip.lit-q  { background: #fff; box-shadow: 0 0 4px rgba(255,255,255,.5); }
-.bl-pip.lit-q.b1 { background: var(--accent); box-shadow: 0 0 6px rgba(232,255,71,.7); }
+/* beat line */
+.beat-line { display: grid; width: 100%; align-items: center; }
+.bl-group { display: flex; gap: 2px; }
+.bl-group + .bl-group { margin-left: 5px; }
+.bl-pip { width: 8px; height: 8px; border-radius: 50%; background: #2a2a2a; flex-shrink: 0; }
+.bl-pip.q   { width: 10px; height: 10px; background: #2e2e2e; }
+.bl-pip.lit-q  { background: #fff; box-shadow: 0 0 5px rgba(255,255,255,.5); }
+.bl-pip.lit-q.b1 { background: var(--accent); box-shadow: 0 0 7px rgba(232,255,71,.7); }
 .bl-pip.lit-e  { background: #aaa; }
 .bl-pip.lit-s  { background: #888; }
 
-/* RIGHT */
-.mc-right { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px 6px; gap: 6px; min-width: 0; }
+/* ── RIGHT COLUMN ── */
+.mc-right { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px; gap: 6px; min-width: 0; }
 .mc-header { display: flex; align-items: center; gap: 4px; }
-.mc-name { flex: 1; background: none; border: none; color: var(--muted); font-size: 12px; font-weight: 600; outline: none; min-width: 0; }
-.mc-name::placeholder { color: #3a3a3a; }
+.mc-name { flex: 1; background: none; border: none; color: var(--text); font-size: 13px; font-weight: 600; outline: none; min-width: 0; }
+.mc-name::placeholder { color: #444; }
 .mc-name:focus { color: var(--accent); }
-.mc-del { background: none; border: none; color: #333; font-size: 13px; cursor: pointer; padding: 1px 3px; }
+.mc-del { background: none; border: none; color: #333; font-size: 12px; cursor: pointer; padding: 1px 3px; }
 .mc-del:hover { color: #e74c3c; }
 
-.mc-opts { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-select.mc-sel { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 3px 6px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+.mc-opts { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+select.mc-sel { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 4px 6px; border-radius: 6px; font-size: 11px; cursor: pointer; }
 .subdiv-btns { display: flex; gap: 3px; }
-.sdv { padding: 3px 8px; border-radius: 5px; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 11px; font-weight: 600; cursor: pointer; }
+.sdv { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: none; color: var(--muted); font-size: 12px; cursor: pointer; }
 .sdv.on { background: var(--surface2); color: var(--text); border-color: #555; }
 
-.mc-footer { display: flex; gap: 6px; }
+.mc-footer { display: flex; gap: 5px; }
 .btn-play { flex: 1; padding: 7px; border-radius: 7px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; background: #2a2a2a; color: var(--text); transition: background .15s; }
 .metro-card.playing .btn-play { background: var(--accent); color: #000; }
 .btn-tap { padding: 7px 10px; border-radius: 7px; border: 1px solid var(--border); background: none; color: var(--text); font-size: 11px; font-weight: 600; cursor: pointer; }
@@ -95,140 +94,43 @@ select.mc-sel { background: var(--surface2); border: 1px solid var(--border); co
 .attribution a:hover { color: var(--accent); }
 
 /* ── SEARCH MODAL ── */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.75);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
 .modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 480px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: modalIn .18s ease-out;
-}
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 480px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; animation: modalIn .18s ease-out; }
 @keyframes modalIn { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-.modal-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
+.modal-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .modal-header h2 { font-size: 14px; font-weight: 700; flex: 1; }
 .modal-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
 .modal-close:hover { background: var(--surface2); color: var(--text); }
 
-.search-bar {
-  display: flex; gap: 8px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.search-input {
-  flex: 1;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color .15s;
-}
+.search-bar { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.search-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 9px 12px; border-radius: 8px; font-size: 14px; outline: none; transition: border-color .15s; }
 .search-input:focus { border-color: #555; }
 .search-input::placeholder { color: var(--muted); }
-.btn-go {
-  padding: 9px 16px;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: #000;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
+.btn-go { padding: 9px 16px; border-radius: 8px; border: none; background: var(--accent); color: #000; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .btn-go:disabled { opacity: .45; cursor: not-allowed; }
 
 .search-results { overflow-y: auto; flex: 1; padding: 8px; }
-
-.result-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background .12s;
-  border: 1px solid transparent;
-}
+.result-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; cursor: pointer; transition: background .12s; border: 1px solid transparent; }
 .result-item:hover { background: var(--surface2); border-color: var(--border); }
-
 .result-info { flex: 1; min-width: 0; }
 .result-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .result-artist { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.result-bpm {
-  display: flex; flex-direction: column; align-items: center;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 5px 10px;
-  flex-shrink: 0;
-  min-width: 52px;
-}
+.result-bpm { display: flex; flex-direction: column; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; flex-shrink: 0; min-width: 52px; }
 .result-bpm-val { font-size: 18px; font-weight: 800; line-height: 1; color: var(--accent); }
 .result-bpm-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-
-.result-add {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all .12s;
-}
+.result-add { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: all .12s; }
 .result-add:hover { background: var(--accent); color: #000; border-color: var(--accent); }
 .result-add.added { background: #1a2a1a; color: #4ade80; border-color: #1a3a1a; cursor: default; }
 
-.search-status {
-  padding: 24px;
-  text-align: center;
-  color: var(--muted);
-  font-size: 13px;
-}
+.search-status { padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
 .search-status.error { color: #f87171; }
 
-/* ── API KEY NOTICE ── */
-.api-notice {
-  margin: 8px 16px;
-  padding: 10px 12px;
-  background: #1a1500;
-  border: 1px solid #3a3000;
-  border-radius: 8px;
-  font-size: 11px;
-  color: #a89050;
-  display: none;
-}
+.api-notice { margin: 8px 16px; padding: 10px 12px; background: #1a1500; border: 1px solid #3a3000; border-radius: 8px; font-size: 11px; color: #a89050; display: none; }
 .api-notice.show { display: block; }
 .api-notice code { background: #2a2000; padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; color: var(--accent); }
 
-/* scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
@@ -244,10 +146,8 @@ select.mc-sel { background: var(--surface2); border: 1px solid var(--border); co
   </div>
 </div>
 
-<div class="main">
-  <div class="metros" id="metros">
-    <div class="empty-state"><span>🥁</span>Tap <b>＋ New</b> to add a tempo</div>
-  </div>
+<div class="metros" id="metros">
+  <div class="empty-state"><span>🥁</span>Tap <b>＋ New</b> to add a tempo</div>
 </div>
 
 <!-- Required attribution for GetSongBPM API -->
@@ -262,24 +162,15 @@ select.mc-sel { background: var(--surface2); border: 1px solid var(--border); co
       <h2>🔍 Search Song BPM</h2>
       <button class="modal-close" onclick="closeSearch()">✕</button>
     </div>
-
-    <!-- API key notice — shown when key is missing -->
     <div class="api-notice" id="apiNotice">
-      ⚠️ API KEY MISSING
+      ⚠️ Add your API key: find <code>YOUR_API_KEY_HERE</code> in the script and replace it.
+      Get a free key at <a href="https://getsongbpm.com/api" target="_blank" style="color:var(--accent)">getsongbpm.com/api</a>
     </div>
-
     <div class="search-bar">
-      <input
-        class="search-input"
-        id="searchInput"
-        type="text"
-        placeholder="Song title or artist…"
-        onkeydown="if(event.key==='Enter') doSearch()"
-        autocomplete="off"
-      />
+      <input class="search-input" id="searchInput" type="text" placeholder="Song title or artist…"
+        onkeydown="if(event.key==='Enter') doSearch()" autocomplete="off" />
       <button class="btn-go" id="searchBtn" onclick="doSearch()">Search</button>
     </div>
-
     <div class="search-results" id="searchResults">
       <div class="search-status">Search for a song to find its BPM</div>
     </div>
@@ -300,60 +191,56 @@ let metros = JSON.parse(localStorage.getItem('vmet2') || 'null') || [
   { id: 3, name: 'Chorus', bpm: 128, ts: 4, subdiv: 2 },
 ];
 let nid = Math.max(0, ...metros.map(m => m.id)) + 1;
-
 const rt = {};
 function rtOf(id) {
-  if (!rt[id]) rt[id] = { playing: false, beat: 0, timerId: null, lastTaps: [], pipIdx: -1 };
+  if (!rt[id]) rt[id] = { playing: false, pipIdx: -1, timerId: null, lastTaps: [] };
   return rt[id];
 }
 function save() { localStorage.setItem('vmet2', JSON.stringify(metros)); }
 
-// ── RENDER ──
-function render() { renderMetros(); }
-
-function renderMetros() {
+function render() {
   const el = document.getElementById('metros');
   if (!metros.length) {
     el.innerHTML = '<div class="empty-state"><span>🥁</span>Tap <b>＋ New</b> to add a tempo</div>';
     return;
   }
-  el.innerHTML = metros.map(m => buildCard(m)).join('');
+  el.innerHTML = metros.map(buildCard).join('');
 }
 
 function buildCard(m) {
-  const pipsPerBeat = m.subdiv;
   const r = rtOf(m.id);
+  const pipsPerBeat = m.subdiv;
   let beatLineHTML = '';
-  for (let beat = 0; beat < m.ts; beat++) {
+  for (let b = 0; b < m.ts; b++) {
     beatLineHTML += '<div class="bl-group">';
-    for (let sub = 0; sub < pipsPerBeat; sub++) {
-      const pipIdx = beat * pipsPerBeat + sub;
-      const isQ = sub === 0;
-      const isB1 = beat === 0 && sub === 0;
-      const isLit = pipIdx === r.pipIdx;
+    for (let s = 0; s < pipsPerBeat; s++) {
+      const idx = b * pipsPerBeat + s;
+      const isQ = s === 0, isB1 = idx === 0, isLit = idx === r.pipIdx;
       let cls = isQ ? 'bl-pip q' : 'bl-pip';
       if (isLit) cls += isQ ? (isB1 ? ' lit-q b1' : ' lit-q') : (pipsPerBeat === 4 ? ' lit-s' : ' lit-e');
-      beatLineHTML += `<div class="${cls}" id="pip-${m.id}-${pipIdx}"></div>`;
+      beatLineHTML += `<div class="${cls}" id="pip-${m.id}-${idx}"></div>`;
     }
     beatLineHTML += '</div>';
   }
   const safeName = m.name.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  return `<div class="metro-card ${r.playing ? 'playing' : ''}" id="card-${m.id}">
+  return `<div class="metro-card ${r.playing?'playing':''}" id="card-${m.id}">
     <div class="mc-body">
       <div class="mc-left">
-        <div class="dot-area"><div class="dot-ring"></div><div class="dot" id="dot-${m.id}"></div></div>
-        <div class="bpm-row">
-          <div class="bpm-val" id="bpmval-${m.id}" contenteditable="true"
-            onblur="bpmEdit(${m.id},this.textContent)"
-            onkeydown="if(event.key==='Enter'){this.blur();return false}"
-          >${m.bpm}</div>
-          <div class="bpm-unit">bpm</div>
+        <div class="mc-top">
+          <div class="dot-area"><div class="dot-ring"></div><div class="dot" id="dot-${m.id}"></div></div>
+          <div class="bpm-group">
+            <div class="bpm-val" id="bpmval-${m.id}" contenteditable="true"
+              onblur="bpmEdit(${m.id},this.textContent)"
+              onkeydown="if(event.key==='Enter'){this.blur();return false}"
+            >${m.bpm}</div>
+            <div class="bpm-unit">bpm</div>
+          </div>
+          <div class="bpm-btns">
+            <button class="bpm-btn" onclick="adjBPM(${m.id},1)">+</button>
+            <button class="bpm-btn" onclick="adjBPM(${m.id},-1)">−</button>
+          </div>
         </div>
-        <div class="bpm-btns">
-          <button class="bpm-btn" onclick="adjBPM(${m.id},1)">+</button>
-          <button class="bpm-btn" onclick="adjBPM(${m.id},-1)">−</button>
-        </div>
-        <div class="beat-line" id="bl-${m.id}">${beatLineHTML}</div>
+        <div class="beat-line" id="bl-${m.id}" style="grid-template-columns:repeat(${m.ts*m.subdiv},1fr)">${beatLineHTML}</div>
       </div>
       <div class="mc-right">
         <div class="mc-header">
@@ -378,63 +265,40 @@ function buildCard(m) {
 }
 
 // ── METRONOME ──
-function togglePlay(id) { const r = rtOf(id); r.playing ? stopMetro(id) : startMetro(id); }
-
+function togglePlay(id) { rtOf(id).playing ? stopMetro(id) : startMetro(id); }
 function startMetro(id) {
-  const r = rtOf(id);
-  r.playing = true; r.beat = 0; r.pipIdx = -1;
+  const r = rtOf(id); r.playing = true; r.pipIdx = -1;
   refreshCard(id); tick(id);
 }
-
 function stopMetro(id) {
-  const r = rtOf(id);
-  r.playing = false;
-  clearTimeout(r.timerId);
-  r.beat = 0; r.pipIdx = -1;
+  const r = rtOf(id); r.playing = false; clearTimeout(r.timerId); r.pipIdx = -1;
   refreshCard(id);
 }
-
 function tick(id) {
-  const r = rtOf(id);
-  if (!r.playing) return;
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
+  const r = rtOf(id); if (!r.playing) return;
+  const m = metros.find(x => x.id === id); if (!m) return;
   fireBeat(id, m);
   r.timerId = setTimeout(() => tick(id), 60000 / m.bpm / m.subdiv);
 }
-
 function fireBeat(id, m) {
   const r = rtOf(id);
-  const totalPips = m.subdiv * m.ts;
-  r.pipIdx = (r.pipIdx + 1) % totalPips;
-  const isQ = r.pipIdx % m.subdiv === 0;
-  const isB1 = r.pipIdx === 0;
+  const total = m.subdiv * m.ts;
+  r.pipIdx = (r.pipIdx + 1) % total;
+  const isQ = r.pipIdx % m.subdiv === 0, isB1 = r.pipIdx === 0;
   if (isQ) {
     const dot = document.getElementById('dot-' + id);
-    if (dot) {
-      dot.classList.remove('pulse', 'b1');
-      void dot.offsetWidth;
-      dot.classList.add('pulse');
-      if (isB1) dot.classList.add('b1');
-    }
+    if (dot) { dot.classList.remove('pulse','b1'); void dot.offsetWidth; dot.classList.add('pulse'); if (isB1) dot.classList.add('b1'); }
   }
   const bl = document.getElementById('bl-' + id);
   if (bl) {
-    const prev = bl.querySelector('.lit-q, .lit-e, .lit-s');
-    if (prev) prev.classList.remove('lit-q', 'lit-e', 'lit-s', 'b1');
+    const prev = bl.querySelector('.lit-q,.lit-e,.lit-s');
+    if (prev) prev.classList.remove('lit-q','lit-e','lit-s','b1');
     const pip = document.getElementById(`pip-${id}-${r.pipIdx}`);
-    if (pip) {
-      if (isQ) { pip.classList.add('lit-q'); if (isB1) pip.classList.add('b1'); }
-      else pip.classList.add(m.subdiv === 4 ? 'lit-s' : 'lit-e');
-    }
+    if (pip) { pip.classList.add(isQ ? 'lit-q' : m.subdiv===4 ? 'lit-s' : 'lit-e'); if (isB1) pip.classList.add('b1'); }
   }
 }
-
 function refreshCard(id) {
-  const card = document.getElementById('card-' + id);
-  if (!card) return;
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
+  const card = document.getElementById('card-' + id); if (!card) return;
   const r = rtOf(id);
   card.classList.toggle('playing', r.playing);
   const btn = card.querySelector('.btn-play');
@@ -443,126 +307,91 @@ function refreshCard(id) {
 
 // ── PROPS ──
 function updateProp(id, key, val) {
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
+  const m = metros.find(x => x.id === id); if (!m) return;
   m[key] = val; save();
-  const wasPlaying = rtOf(id).playing;
-  if (wasPlaying) stopMetro(id);
+  const was = rtOf(id).playing;
+  if (was) stopMetro(id);
   const card = document.getElementById('card-' + id);
   if (card) card.outerHTML = buildCard(m);
-  if (wasPlaying) startMetro(id);
+  if (was) startMetro(id);
 }
-
 function adjBPM(id, d) {
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
+  const m = metros.find(x => x.id === id); if (!m) return;
   m.bpm = Math.max(20, Math.min(300, m.bpm + d)); save();
-  document.getElementById('bpmval-' + id).textContent = m.bpm;
-  const r = rtOf(id);
-  if (r.playing) { clearTimeout(r.timerId); tick(id); }
+  const el = document.getElementById('bpmval-' + id); if (el) el.textContent = m.bpm;
+  const r = rtOf(id); if (r.playing) { clearTimeout(r.timerId); tick(id); }
 }
-
 function bpmEdit(id, raw) {
-  const val = parseInt(raw);
-  if (isNaN(val)) { document.getElementById('bpmval-' + id).textContent = metros.find(x=>x.id===id)?.bpm; return; }
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
-  m.bpm = Math.max(20, Math.min(300, val));
-  document.getElementById('bpmval-' + id).textContent = m.bpm; save();
-  const r = rtOf(id);
-  if (r.playing) { clearTimeout(r.timerId); tick(id); }
+  const v = parseInt(raw), m = metros.find(x => x.id === id); if (!m) return;
+  if (isNaN(v)) { document.getElementById('bpmval-'+id).textContent = m.bpm; return; }
+  m.bpm = Math.max(20, Math.min(300, v)); save();
+  document.getElementById('bpmval-'+id).textContent = m.bpm;
+  const r = rtOf(id); if (r.playing) { clearTimeout(r.timerId); tick(id); }
 }
-
 function tap(id) {
-  const r = rtOf(id);
-  const now = Date.now();
-  r.lastTaps.push(now);
-  if (r.lastTaps.length > 6) r.lastTaps.shift();
+  const r = rtOf(id), now = Date.now();
+  r.lastTaps.push(now); if (r.lastTaps.length > 6) r.lastTaps.shift();
   if (r.lastTaps.length < 2) return;
-  const gaps = r.lastTaps.slice(1).map((t,i) => t - r.lastTaps[i]);
-  const avg = gaps.reduce((a,b)=>a+b)/gaps.length;
-  const bpm = Math.round(60000 / avg);
-  const m = metros.find(x => x.id === id);
-  if (!m) return;
-  m.bpm = Math.max(20, Math.min(300, bpm)); save();
-  document.getElementById('bpmval-' + id).textContent = m.bpm;
+  const avg = r.lastTaps.slice(1).reduce((a,t,i)=>a+(t-r.lastTaps[i]),0)/(r.lastTaps.length-1);
+  const m = metros.find(x => x.id === id); if (!m) return;
+  m.bpm = Math.max(20, Math.min(300, Math.round(60000/avg))); save();
+  document.getElementById('bpmval-'+id).textContent = m.bpm;
   if (r.playing) { clearTimeout(r.timerId); r.pipIdx = -1; tick(id); }
 }
-
 function addMetro(name = '', bpm = 120) {
   const m = { id: nid++, name, bpm, ts: 4, subdiv: 2 };
   metros.push(m); save(); render();
   setTimeout(() => {
     const card = document.getElementById('card-' + m.id);
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth' });
-      if (!name) card.querySelector('.mc-name').focus();
-    }
+    if (card) { card.scrollIntoView({ behavior: 'smooth' }); if (!name) card.querySelector('.mc-name').focus(); }
   }, 50);
   return m.id;
 }
-
 function deleteMetro(id) {
-  stopMetro(id);
-  metros = metros.filter(m => m.id !== id);
-  save(); render();
+  stopMetro(id); metros = metros.filter(m => m.id !== id); save(); render();
 }
 
 // ── SONG SEARCH ──
-let addedSongIds = new Set(); // track which result items have been added this session
+let addedSongIds = new Set();
 
 function openSearch() {
   document.getElementById('searchModal').classList.add('open');
   setTimeout(() => document.getElementById('searchInput').focus(), 100);
-  // Show warning if API key not set
-  const notice = document.getElementById('apiNotice');
-  notice.classList.toggle('show', GETSONGBPM_API_KEY === 'YOUR_API_KEY_HERE');
+  document.getElementById('apiNotice').classList.toggle('show', GETSONGBPM_API_KEY === 'YOUR_API_KEY_HERE');
 }
-
 function closeSearch() {
   document.getElementById('searchModal').classList.remove('open');
   addedSongIds.clear();
 }
-
 function handleOverlayClick(e) {
   if (e.target === document.getElementById('searchModal')) closeSearch();
 }
-
-// Close on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 
 async function doSearch() {
   const query = document.getElementById('searchInput').value.trim();
   if (!query) return;
-
   const btn = document.getElementById('searchBtn');
   const resultsEl = document.getElementById('searchResults');
-
-  btn.disabled = true;
-  btn.textContent = '…';
+  btn.disabled = true; btn.textContent = '…';
   resultsEl.innerHTML = '<div class="search-status">Searching…</div>';
 
-  // If no real API key, show a friendly message
   if (GETSONGBPM_API_KEY === 'YOUR_API_KEY_HERE') {
     resultsEl.innerHTML = `<div class="search-status error">
       API key not set yet.<br><br>
       Replace <b>YOUR_API_KEY_HERE</b> in the script with your key from
       <a href="https://getsongbpm.com/api" target="_blank" style="color:var(--accent)">getsongbpm.com/api</a>
     </div>`;
-    btn.disabled = false;
-    btn.textContent = 'Search';
+    btn.disabled = false; btn.textContent = 'Search';
     return;
   }
 
   try {
-    // GetSongBPM search endpoint
     const url = `https://api.getsongbpm.com/search/?api_key=${GETSONGBPM_API_KEY}&type=both&lookup=${encodeURIComponent(query)}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-
     const songs = data.search || [];
-
     if (!songs.length) {
       resultsEl.innerHTML = '<div class="search-status">No results found. Try a different search.</div>';
     } else {
@@ -575,20 +404,16 @@ async function doSearch() {
       <small style="color:#555">${err.message}</small>
     </div>`;
   }
-
-  btn.disabled = false;
-  btn.textContent = 'Search';
+  btn.disabled = false; btn.textContent = 'Search';
 }
 
 function buildResultItem(song) {
-  // GetSongBPM returns tempo as song.tempo
   const bpm = Math.round(parseFloat(song.tempo)) || '?';
   const title = song.song_title || song.title || 'Unknown';
   const artist = song.artist?.name || song.artist_name || '';
   const songId = song.id || song.song_id;
   const isAdded = addedSongIds.has(songId);
-
-  return `<div class="result-item" onclick="addSongFromSearch('${songId}', '${escapeAttr(title)}', '${escapeAttr(artist)}', ${bpm})">
+  return `<div class="result-item" onclick="addSongFromSearch('${songId}','${escapeAttr(title)}','${escapeAttr(artist)}',${bpm})">
     <div class="result-info">
       <div class="result-title">${escapeHTML(title)}</div>
       ${artist ? `<div class="result-artist">${escapeHTML(artist)}</div>` : ''}
@@ -597,32 +422,27 @@ function buildResultItem(song) {
       <div class="result-bpm-val">${bpm}</div>
       <div class="result-bpm-label">BPM</div>
     </div>
-    <button class="result-add ${isAdded ? 'added' : ''}" id="addbtn-${songId}"
-      onclick="event.stopPropagation(); addSongFromSearch('${songId}', '${escapeAttr(title)}', '${escapeAttr(artist)}', ${bpm})">
+    <button class="result-add ${isAdded?'added':''}" id="addbtn-${songId}"
+      onclick="event.stopPropagation();addSongFromSearch('${songId}','${escapeAttr(title)}','${escapeAttr(artist)}',${bpm})">
       ${isAdded ? '✓' : '+ Add'}
     </button>
   </div>`;
 }
 
 function addSongFromSearch(songId, title, artist, bpm) {
-  if (isNaN(bpm) || bpm === '?') {
-    alert('No BPM data available for this song.');
-    return;
-  }
+  if (isNaN(bpm) || bpm === '?') { alert('No BPM data available for this song.'); return; }
   const label = artist ? `${title} — ${artist}` : title;
   addMetro(label, parseInt(bpm));
   addedSongIds.add(songId);
-  // Update the button visually
   const btn = document.getElementById('addbtn-' + songId);
   if (btn) { btn.textContent = '✓'; btn.classList.add('added'); }
 }
 
-// Helpers
 function escapeHTML(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 function escapeAttr(str) {
-  return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+  return String(str).replace(/'/g,"\\'").replace(/"/g,'\\"');
 }
 
 render();
